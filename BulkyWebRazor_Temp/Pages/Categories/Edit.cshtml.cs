@@ -30,7 +30,7 @@ public class EditModel : PageModel
         {
             _appDbContext.Categories.Update(Category!);
             _appDbContext.SaveChanges();
-            TempData["success"] = "Category updated successfully";
+            TempData["success"] = "Category updated      successfully";
             return RedirectToPage("index");
         }
 
