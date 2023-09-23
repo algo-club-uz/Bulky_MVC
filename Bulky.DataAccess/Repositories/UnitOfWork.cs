@@ -1,21 +1,21 @@
 ﻿using Bulky.DataAccess.Data;
 using Bulky.DataAccess.Repositories.IRepositories;
-using Bulky.Models;
 
 namespace Bulky.DataAccess.Repositories;
 
-public class CategoryRepository: Repository<Category>,ICategoryRepository
+public class UnitOfWork:IUnitOfWork
 {
     private readonly AppDbContext _appDbContext;
-    public CategoryRepository(AppDbContext appDbContext) : base(appDbContext)
+    public ICategoryRepository Categories { get; }
+
+    public UnitOfWork(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
+        Categories = new CategoryRepository(_appDbContext);
     }
 
-    public void Update(Category category)
+    public void Save()
     {
-        _appDbContext.Categories.Update(category);
         _appDbContext.SaveChanges();
     }
-    
 }
