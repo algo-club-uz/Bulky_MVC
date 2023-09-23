@@ -34,4 +34,8 @@
     <UpToDateCheckInput Remove="Views\Category\Delete.cshtml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bulky.DataAccess\Bulky.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>
