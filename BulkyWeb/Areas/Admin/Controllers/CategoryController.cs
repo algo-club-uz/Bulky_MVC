@@ -2,8 +2,9 @@
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BulkyWeb.Controllers;
+namespace BulkyWeb.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class CategoryController : Controller
 {
     private readonly IUnitOfWork _unit;
@@ -27,8 +28,8 @@ public class CategoryController : Controller
     [HttpPost]
     public IActionResult Create(Category category)
     {
-        if(category.Name == category.DisplayOrder.ToString())
-            ModelState.AddModelError("name","Name can't be equal with order's name");
+        if (category.Name == category.DisplayOrder.ToString())
+            ModelState.AddModelError("name", "Name can't be equal with order's name");
         if (ModelState.IsValid)
         {
             _unit.Categories.Add(category);
@@ -80,7 +81,7 @@ public class CategoryController : Controller
         return View(category);
     }
 
-    [HttpPost,ActionName("Delete")]
+    [HttpPost, ActionName("Delete")]
     public IActionResult DeletePost(int? id)
     {
         var category = _unit.Categories.Get(u => u.Id == id);
@@ -94,5 +95,5 @@ public class CategoryController : Controller
         TempData["success"] = "Category deleted successfully";
         return RedirectToAction("Index", "Category");
     }
-    
+
 }
