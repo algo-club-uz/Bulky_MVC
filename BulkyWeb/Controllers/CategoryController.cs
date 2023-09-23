@@ -1,4 +1,4 @@
-﻿using Bulky.DataAccess.Data;
+﻿using Bulky.DataAccess.Repositories.IRepositories;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,16 +6,16 @@ namespace BulkyWeb.Controllers;
 
 public class CategoryController : Controller
 {
-    private readonly AppDbContext _context;
+    private readonly IUnitOfWork _unit;
 
-    public CategoryController(AppDbContext context)
+    public CategoryController(IUnitOfWork unit)
     {
-        _context = context;
+        _unit = unit;
     }
 
     public IActionResult Index()
     {
-        List<Category> categories = _context.Categories.ToList();
+        List<Category> categories = _unit.Categories.GetAll().ToList();
         return View(categories);
     }
 
@@ -31,8 +31,8 @@ public class CategoryController : Controller
             ModelState.AddModelError("name","Name can't be equal with order's name");
         if (ModelState.IsValid)
         {
-            _context.Categories.Add(category);
-            _context.SaveChanges();
+            _unit.Categories.Add(category);
+            _unit.Save();
             TempData["success"] = "Category created successfully";
             return RedirectToAction("Index", "Category");
         }
@@ -46,7 +46,7 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+        var category = _unit.Categories.Get(u => u.Id == id);
         if (category == null)
         {
             return NotFound();
@@ -59,8 +59,7 @@ public class CategoryController : Controller
     {
         if (ModelState.IsValid)
         {
-            _context.Categories.Update(category);
-            _context.SaveChanges();
+            _unit.Categories.Update(category);
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
         }
@@ -73,7 +72,7 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        var category = _context.Categories.FirstOrDefault(c => c.Id == id);
+        var category = _unit.Categories.Get(u => u.Id == id);
         if (category == null)
         {
             return NotFound();
@@ -84,14 +83,14 @@ public class CategoryController : Controller
     [HttpPost,ActionName("Delete")]
     public IActionResult DeletePost(int? id)
     {
-        var category = _context.Categories.Find(id);
+        var category = _unit.Categories.Get(u => u.Id == id);
         if (category == null)
         {
             return NotFound();
         }
 
-        _context.Categories.Remove(category);
-        _context.SaveChanges();
+        _unit.Categories.Remove(category);
+        _unit.Save();
         TempData["success"] = "Category deleted successfully";
         return RedirectToAction("Index", "Category");
     }
