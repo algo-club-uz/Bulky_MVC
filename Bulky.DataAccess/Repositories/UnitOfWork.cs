@@ -7,10 +7,12 @@ public class UnitOfWork:IUnitOfWork
 {
     private readonly AppDbContext _appDbContext;
     public ICategoryRepository Categories { get; }
+    public IProductRepository Products { get; }
 
-    public UnitOfWork(AppDbContext appDbContext)
+    public UnitOfWork(AppDbContext appDbContext, IProductRepository products)
     {
         _appDbContext = appDbContext;
+        Products = products;
         Categories = new CategoryRepository(_appDbContext);
     }
 
