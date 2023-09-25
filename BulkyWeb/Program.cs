@@ -13,7 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("BulkyDb"));
 });
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 var app = builder.Build();
 
