@@ -9,10 +9,10 @@ public class UnitOfWork:IUnitOfWork
     public ICategoryRepository Categories { get; }
     public IProductRepository Products { get; }
 
-    public UnitOfWork(AppDbContext appDbContext, IProductRepository products)
+    public UnitOfWork(AppDbContext appDbContext)
     {
         _appDbContext = appDbContext;
-        Products = products;
+        Products = new ProductRepository(_appDbContext);
         Categories = new CategoryRepository(_appDbContext);
     }
 
