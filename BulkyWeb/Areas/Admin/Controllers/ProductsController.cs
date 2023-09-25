@@ -12,6 +12,7 @@ public class ProductsController : Controller
 {
     private readonly IUnitOfWork _unit;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly string includeName = "Category";
     public ProductsController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
     {
         _unit = unitOfWork;
@@ -20,7 +21,7 @@ public class ProductsController : Controller
 
     public IActionResult Index()
     {
-        List<Product> products = _unit.Products.GetAll().ToList();
+        List<Product> products = _unit.Products.GetAll(includeName).ToList();
         return View(products);
     }
 
@@ -60,6 +61,18 @@ public class ProductsController : Controller
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string productPath = Path.Combine(wwRootPath, @"images\product");
 
+                if (!string.IsNullOrEmpty(productVm.Product.ProductImage))
+                {
+                    //delete the old image
+                    var oldImagePath = Path
+                        .Combine(wwRootPath, productVm.Product.ProductImage.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
                 using (var fileStream = new FileStream(Path.Combine(productPath,fileName),FileMode.Create))
                 {
                     file.CopyTo(fileStream);
@@ -68,7 +81,14 @@ public class ProductsController : Controller
                 productVm.Product.ProductImage = @"\images\product\" + fileName;
             }
 
-            _unit.Products.Add(productVm.Product);
+            if (productVm.Product.Id is 0)
+            {
+                _unit.Products.Add(productVm.Product);
+            }
+            else
+            {
+                _unit.Products.Update(productVm.Product);
+            }
             _unit.Save();
             TempData["success"] = "Product created successfully";
             return RedirectToAction("Index");
@@ -115,5 +135,14 @@ public class ProductsController : Controller
         return RedirectToAction("Index", "Products");
     }
 
+    #region API CALLS
+
+    public IActionResult GetAll()
+    {
+        List<Product> products = _unit.Products.GetAll(includeName).ToList();
+        return Json(new {data = products });
+    }
+
+    #endregion
 
 }
