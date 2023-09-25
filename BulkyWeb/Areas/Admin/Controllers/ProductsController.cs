@@ -104,43 +104,40 @@ public class ProductsController : Controller
         }
     }
 
-    
-    public IActionResult Delete(int? id)
-    {
-        if (id == null && id == 0)
-        {
-            return NotFound();
-        }
-
-        var product = _unit.Products.Get(u => u.Id == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-        return View(product);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    public IActionResult DeletePost(int? id)
-    {
-        var product = _unit.Products.Get(u => u.Id == id);
-        if (product == null)
-        {
-            return NotFound();
-        }
-
-        _unit.Products.Remove(product);
-        _unit.Save();
-        TempData["success"] = "Product deleted successfully";
-        return RedirectToAction("Index", "Products");
-    }
 
     #region API CALLS
 
+    [HttpGet]
     public IActionResult GetAll()
     {
         List<Product> products = _unit.Products.GetAll(includeName).ToList();
         return Json(new {data = products });
+    }
+
+    [HttpDelete]
+    public IActionResult Delete(int? id)
+    {
+        var productToBeDeleted = _unit.Products.Get(u => u.Id == id);
+        if (productToBeDeleted == null)
+        {
+            return Json(new { success = false, message = "Error while deleting" });
+        }
+
+        if (!string.IsNullOrEmpty(productToBeDeleted.ProductImage))
+        {
+            var oldImagePath = Path
+                .Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ProductImage.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+        }
+
+        _unit.Products.Remove(productToBeDeleted);
+        _unit.Save();
+
+        return Json(new { success = true, message = "Delete Successful" });
     }
 
     #endregion
