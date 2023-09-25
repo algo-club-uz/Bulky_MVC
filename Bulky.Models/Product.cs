@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bulky.Models;
 
@@ -37,5 +38,11 @@ public class Product
     [Display(Name ="Price for 100+")]
     [Range(1,1000)]
     public double Price100 { get; set; }
+
+    public string? ProductImage { get; set; }
+
+    [ForeignKey("CategoryId")]
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
 
 }
