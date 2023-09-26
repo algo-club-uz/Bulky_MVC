@@ -40,7 +40,7 @@ public class Product
     [Range(1,1000)]
     public double Price100 { get; set; }
 
-    public string? ProductImage { get; set; }
+    public string? ImageUrl { get; set; }
 
     
     public int CategoryId { get; set; }
