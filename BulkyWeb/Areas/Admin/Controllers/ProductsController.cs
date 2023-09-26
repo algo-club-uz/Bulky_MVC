@@ -61,11 +61,11 @@ public class ProductsController : Controller
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string productPath = Path.Combine(wwRootPath, @"images\product");
 
-                if (!string.IsNullOrEmpty(productVm.Product.ProductImage))
+                if (!string.IsNullOrEmpty(productVm.Product.ImageUrl))
                 {
                     //delete the old image
                     var oldImagePath = Path
-                        .Combine(wwRootPath, productVm.Product.ProductImage.TrimStart('\\'));
+                        .Combine(wwRootPath, productVm.Product.ImageUrl.TrimStart('\\'));
 
                     if (System.IO.File.Exists(oldImagePath))
                     {
@@ -78,7 +78,7 @@ public class ProductsController : Controller
                     file.CopyTo(fileStream);
                 }
 
-                productVm.Product.ProductImage = @"\images\product\" + fileName;
+                productVm.Product.ImageUrl = @"\images\product\" + fileName;
             }
 
             if (productVm.Product.Id is 0)
@@ -123,10 +123,10 @@ public class ProductsController : Controller
             return Json(new { success = false, message = "Error while deleting" });
         }
 
-        if (!string.IsNullOrEmpty(productToBeDeleted.ProductImage))
+        if (!string.IsNullOrEmpty(productToBeDeleted.ImageUrl))
         {
             var oldImagePath = Path
-                .Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ProductImage.TrimStart('\\'));
+                .Combine(_webHostEnvironment.WebRootPath, productToBeDeleted.ImageUrl.TrimStart('\\'));
 
             if (System.IO.File.Exists(oldImagePath))
             {
