@@ -6,5 +6,7 @@ public interface IUnitOfWork
 
     IProductRepository Products { get; }
 
+    ICompanyRepository Companies { get; }
+
     void Save();
 }
