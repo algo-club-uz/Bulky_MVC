@@ -77,7 +77,32 @@ public class CartsController : Controller
 
     public IActionResult Summary()
     {
-        return View();
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+        ShoppingCartVM = new()
+        {
+            ShoppingCartList = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
+            OrderHeader = new OrderHeader()
+
+        };
+
+        var user = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
+        ShoppingCartVM.OrderHeader.ApplicationUser = user;
+
+        ShoppingCartVM.OrderHeader.Name = user.Name;
+        ShoppingCartVM.OrderHeader.PhoneNumber = user.PhoneNumber;
+        ShoppingCartVM.OrderHeader.StreetAddress = user.StreetAddress;
+        ShoppingCartVM.OrderHeader.City = user.City;
+        ShoppingCartVM.OrderHeader.State = user.State;
+        ShoppingCartVM.OrderHeader.PostalCode = user.PostalCode;
+
+        foreach (var cart in ShoppingCartVM.ShoppingCartList)
+        {
+            cart.Price = GetPriceBasedOnQuantity(cart);
+            ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
+        }
+        return View(ShoppingCartVM);
     }
 
     private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
