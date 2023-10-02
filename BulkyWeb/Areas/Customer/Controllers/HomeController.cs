@@ -21,7 +21,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        IEnumerable<Product> products = _unit.Products.GetAll("Category").ToList();
+        IEnumerable<Product> products = _unit.Products.GetAll(includeProperties: "Category").ToList();
         return View(products);
     }
     public IActionResult Details(int id)

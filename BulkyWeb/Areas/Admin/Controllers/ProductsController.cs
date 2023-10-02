@@ -25,7 +25,7 @@ public class ProductsController : Controller
 
     public IActionResult Index()
     {
-        List<Product> products = _unit.Products.GetAll(includeName).ToList();
+        List<Product> products = _unit.Products.GetAll(includeProperties:includeName).ToList();
         return View(products);
     }
 
