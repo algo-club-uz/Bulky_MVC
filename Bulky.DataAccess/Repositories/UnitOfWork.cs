@@ -9,6 +9,7 @@ public class UnitOfWork:IUnitOfWork
     public ICategoryRepository Categories { get; }
     public IProductRepository Products { get; }
     public ICompanyRepository Companies { get; }
+    public IShoppingCartRepository ShoppingCarts { get; }
 
     public UnitOfWork(AppDbContext appDbContext)
     {
@@ -16,6 +17,7 @@ public class UnitOfWork:IUnitOfWork
         Products = new ProductRepository(_appDbContext);
         Categories = new CategoryRepository(_appDbContext);
         Companies = new CompanyRepository(_appDbContext);
+        ShoppingCarts = new ShoppingCartRepository(_appDbContext);
     }
 
     public void Save()
