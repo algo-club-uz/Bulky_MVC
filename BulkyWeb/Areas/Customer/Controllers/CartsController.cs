@@ -2,18 +2,19 @@
 using Bulky.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Bulky.DataAccess.Repositories.IRepositories;
 using Bulky.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BulkyWeb.Areas.Customer.Controllers;
 
-[Area("Customer")]
+[Area("customer")]
 [Authorize]
 public class CartsController : Controller
 {
-    private readonly UnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     public ShoppingCartVM ShoppingCartVM { get; set; }
-    public CartsController(UnitOfWork unitOfWork)
+    public CartsController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
