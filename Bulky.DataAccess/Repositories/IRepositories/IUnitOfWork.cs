@@ -10,5 +10,7 @@ public interface IUnitOfWork
 
     IShoppingCartRepository ShoppingCarts { get; }
 
+    IApplicationUserRepository ApplicationUsers { get; }
+
     void Save();
 }
