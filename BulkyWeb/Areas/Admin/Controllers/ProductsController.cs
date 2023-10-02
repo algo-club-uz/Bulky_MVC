@@ -114,7 +114,7 @@ public class ProductsController : Controller
     [HttpGet]
     public IActionResult GetAll()
     {
-        List<Product> products = _unit.Products.GetAll(includeName).ToList();
+        List<Product> products = _unit.Products.GetAll(includeProperties: includeName).ToList();
         return Json(new {data = products });
     }
 
