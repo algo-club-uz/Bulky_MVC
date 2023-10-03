@@ -12,8 +12,8 @@ public class OrderDetail
     public double Price { get; set; }
 
     [Required]
-    public int OrderId { get; set; }
-    [ForeignKey("OrderId")]
+    public int OrderHeaderId { get; set; }
+    [ForeignKey("OrderHeaderId")]
     [ValidateNever]
     public OrderHeader OrderHeader { get; set; }
 
