@@ -1,11 +1,10 @@
-﻿using Bulky.DataAccess.Repositories;
-using Bulky.Models.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using Bulky.DataAccess.Repositories.IRepositories;
+﻿using Bulky.DataAccess.Repositories.IRepositories;
 using Bulky.Models;
+using Bulky.Models.ViewModels;
 using Bulky.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BulkyWeb.Areas.Customer.Controllers;
 
@@ -161,7 +160,18 @@ public class CartsController : Controller
             _unitOfWork.Save();
         }
 
-        return RedirectToAction();
+        if (check)
+        {
+            //it is a regular customer account and we need to capture payment
+            //stripe capture
+        }
+
+        return RedirectToAction(nameof(OrderConfirmation),new {ShoppingCartVM.OrderHeader.Id});
+    }
+
+    public IActionResult OrderConfirmation(int id)
+    {
+        return View(id);
     }
 
     private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
