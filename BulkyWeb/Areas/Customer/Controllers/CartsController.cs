@@ -210,6 +210,30 @@ public class CartsController : Controller
 
     public IActionResult OrderConfirmation(int id)
     {
+        OrderHeader orderHeader = _unitOfWork.OrderHeaders.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+
+        if (orderHeader.PaymentStatus is not SD.PaymentStatusDelayedPayment)
+        {
+            //this is an order by customer
+
+            var service = new SessionService();
+            Session session = service.Get(orderHeader.SessionId);
+
+
+            if (session.PaymentStatus.ToLower() is "paid" )
+            {
+                _unitOfWork.OrderHeaders.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id,
+                    session.PaymentIntentId);
+                _unitOfWork.OrderHeaders.UpdateStatus(id,SD.StatusApproved,SD.PaymentStatusApproved);
+                _unitOfWork.Save();
+            }
+        }
+
+        List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
+
+        _unitOfWork.ShoppingCarts.RemoveRange(shoppingCarts);
+        _unitOfWork.Save();
+
         return View(id);
     }
 
