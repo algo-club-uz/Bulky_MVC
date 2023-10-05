@@ -25,6 +25,10 @@ public class OrderHeader
     public DateTime PaymentDate { get; set; }
     public DateOnly PaymentDueDate { get; set; }
 
+
+    public string? SessionId { get; set; }
+    public string? PaymentIntentId { get; set;}
+
     [Required]
     public string PhoneNumber { get; set; }
     [Required]
