@@ -47,7 +47,7 @@ public class CartsController : Controller
         var cartFromDb = _unitOfWork.ShoppingCarts.Get(u => u.Id == cartId);
         cartFromDb.Count += 1;
         _unitOfWork.ShoppingCarts.Update(cartFromDb);
-
+        _unitOfWork.Save();
         return RedirectToAction(nameof(Index));
     }
     public IActionResult Minus(int cartId)
@@ -63,6 +63,7 @@ public class CartsController : Controller
         {
             cartFromDb.Count -= 1;
             _unitOfWork.ShoppingCarts.Update(cartFromDb);
+            _unitOfWork.Save();
         }
 
         return RedirectToAction(nameof(Index));
