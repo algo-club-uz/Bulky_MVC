@@ -1,5 +1,4 @@
-﻿using Bulky.DataAccess.Repositories;
-using Bulky.DataAccess.Repositories.IRepositories;
+﻿using Bulky.DataAccess.Repositories.IRepositories;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,9 +24,10 @@ public class OrderController : Controller
     [HttpGet]
     public IActionResult GetAll()
     {
-        List<OrderHeader> orderHeaders = _unitOfWork.OrderHeaders.GetAll(includeProperties: "ApplicationUser").ToList();
-        return Json(new { data = orderHeaders });
+        List<OrderHeader> objOrderHeaders = _unitOfWork.OrderHeaders.GetAll(includeProperties: "ApplicationUser").ToList();
+        return Json(new { data = objOrderHeaders });
     }
+
 
     #endregion
 

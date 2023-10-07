@@ -31,7 +31,7 @@ public class HomeController : Controller
             Product = _unit.Products.Get(u => u.Id == id, "Category"),
             Count = 1,
             ProductId = id
-    };
+        };
         return View(cart);
     }
 
@@ -53,12 +53,12 @@ public class HomeController : Controller
         }
         else
         {
-            _unit.ShoppingCarts.Add(shoppingCart);
+            _unit.ShoppingCarts.Add(shoppingCart); 
+            _unit.Save();
         }
 
         TempData["success"] = "Cart updated successfully";
 
-        _unit.Save();
         return RedirectToAction(nameof(Index));
     }
 
