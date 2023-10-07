@@ -1,14 +1,16 @@
 ﻿using Bulky.DataAccess.Repositories;
+using Bulky.DataAccess.Repositories.IRepositories;
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
 
+[Area("Admin")]
 public class OrderController : Controller
 {
-    private readonly UnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public OrderController(UnitOfWork unitOfWork)
+    public OrderController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
