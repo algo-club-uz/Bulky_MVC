@@ -6,6 +6,7 @@ namespace Bulky.Models;
 
 public class OrderDetail
 {
+    [Key]
     public int Id { get; set; }
 
     public int Count { get; set; }

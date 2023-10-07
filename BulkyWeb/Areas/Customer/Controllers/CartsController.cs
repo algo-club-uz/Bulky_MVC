@@ -9,7 +9,7 @@ using Stripe.Checkout;
 
 namespace BulkyWeb.Areas.Customer.Controllers;
 
-[Area("customer")]
+[Area("Customer")]
 [Authorize]
 public class CartsController : Controller
 {
@@ -84,7 +84,7 @@ public class CartsController : Controller
         ShoppingCartVM = new()
         {
             ShoppingCartList = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
-            OrderHeader = new OrderHeader()
+            OrderHeader = new ()
 
         };
 
@@ -120,7 +120,7 @@ public class CartsController : Controller
         ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
         var user = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
-        ShoppingCartVM.OrderHeader.ApplicationUser = user;
+        
         
 
         foreach (var cart in ShoppingCartVM.ShoppingCartList)
@@ -160,7 +160,7 @@ public class CartsController : Controller
             _unitOfWork.Save();
         }
 
-        if (check)
+        if (user.CompanyId.GetValueOrDefault() == 0)
         {
             //it is a regular customer account and we need to capture payment
             //stripe capture
@@ -170,8 +170,8 @@ public class CartsController : Controller
 
             var options = new SessionCreateOptions
             {
-                SuccessUrl = domain + $"customer/carts/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-                CancelUrl = domain +"customer/carts/index",
+                SuccessUrl = domain + $"Customer/Carts/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+                CancelUrl = domain +"Customer/Carts/index",
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
             };
