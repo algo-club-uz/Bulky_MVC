@@ -43,24 +43,20 @@ public class CompanyController : Controller
     {
         if (ModelState.IsValid)
         {
-           
-           
-
             if (company.Id is 0)
             {
                 _unit.Companies.Add(company);
+                _unit.Save();
             }
             else
             {
                 _unit.Companies.Update(company);
             }
-            _unit.Save();
             TempData["success"] = "Company created successfully";
             return RedirectToAction("Index");
         }
         else
         {
-            ;
             return View(company);
         }
     }
@@ -71,8 +67,8 @@ public class CompanyController : Controller
     [HttpGet]
     public IActionResult GetAll()
     {
-        List<Company> companys = _unit.Companies.GetAll().ToList();
-        return Json(new {data = companys });
+        List<Company> companies = _unit.Companies.GetAll().ToList();
+        return Json(new {data = companies });
     }
 
     [HttpDelete]

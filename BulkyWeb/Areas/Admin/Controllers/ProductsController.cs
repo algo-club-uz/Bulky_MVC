@@ -88,12 +88,12 @@ public class ProductsController : Controller
             if (productVm.Product.Id is 0)
             {
                 _unit.Products.Add(productVm.Product);
+                _unit.Save();
             }
             else
             {
                 _unit.Products.Update(productVm.Product);
             }
-            _unit.Save();
             TempData["success"] = "Product created successfully";
             return RedirectToAction("Index");
         }
