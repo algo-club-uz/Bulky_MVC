@@ -120,7 +120,7 @@ public class CartsController : Controller
         ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
         var user = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
-        
+        ShoppingCartVM.OrderHeader.ApplicationUser = user;
         
 
         foreach (var cart in ShoppingCartVM.ShoppingCartList)
