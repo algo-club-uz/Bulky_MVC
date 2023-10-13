@@ -62,6 +62,7 @@ public class CategoryController : Controller
         if (ModelState.IsValid)
         {
             _unit.Categories.Update(category);
+            _unit.Save();
             TempData["success"] = "Category updated successfully";
             return RedirectToAction("Index", "Category");
         }

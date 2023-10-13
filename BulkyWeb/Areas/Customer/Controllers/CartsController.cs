@@ -29,8 +29,7 @@ public class CartsController : Controller
         ShoppingCartVM = new()
         {
             ShoppingCartList = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == userId, includeProperties:"Product" ),
-            OrderHeader = new OrderHeader()
-
+            OrderHeader = new ()
         };
 
         foreach (var cart in ShoppingCartVM.ShoppingCartList)
@@ -47,6 +46,7 @@ public class CartsController : Controller
         var cartFromDb = _unitOfWork.ShoppingCarts.Get(u => u.Id == cartId);
         cartFromDb.Count += 1;
         _unitOfWork.ShoppingCarts.Update(cartFromDb);
+        _unitOfWork.Save();
         return RedirectToAction(nameof(Index));
     }
     public IActionResult Minus(int cartId)
@@ -56,13 +56,13 @@ public class CartsController : Controller
         {
             //remove that from cart
             _unitOfWork.ShoppingCarts.Remove(cartFromDb);
-            _unitOfWork.Save();
         }
         else
         {
             cartFromDb.Count -= 1;
             _unitOfWork.ShoppingCarts.Update(cartFromDb);
         }
+        _unitOfWork.Save();
 
         return RedirectToAction(nameof(Index));
     }
@@ -85,18 +85,16 @@ public class CartsController : Controller
         {
             ShoppingCartList = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
             OrderHeader = new ()
-
         };
 
-        var user = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
-        ShoppingCartVM.OrderHeader.ApplicationUser = user;
+        ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
 
-        ShoppingCartVM.OrderHeader.Name = user.Name;
-        ShoppingCartVM.OrderHeader.PhoneNumber = user.PhoneNumber;
-        ShoppingCartVM.OrderHeader.StreetAddress = user.StreetAddress;
-        ShoppingCartVM.OrderHeader.City = user.City;
-        ShoppingCartVM.OrderHeader.State = user.State;
-        ShoppingCartVM.OrderHeader.PostalCode = user.PostalCode;
+        ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
+        ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
+        ShoppingCartVM.OrderHeader.StreetAddress = ShoppingCartVM.OrderHeader.ApplicationUser.StreetAddress;
+        ShoppingCartVM.OrderHeader.City = ShoppingCartVM.OrderHeader.ApplicationUser.City;
+        ShoppingCartVM.OrderHeader.State = ShoppingCartVM.OrderHeader.ApplicationUser.State;
+        ShoppingCartVM.OrderHeader.PostalCode = ShoppingCartVM.OrderHeader.ApplicationUser.PostalCode;
 
         foreach (var cart in ShoppingCartVM.ShoppingCartList)
         {
@@ -107,7 +105,7 @@ public class CartsController : Controller
     }
 
     [HttpPost]
-    [ActionName("SummaryPOST")]
+    [ActionName("Summary")]
     public IActionResult SummaryPOST()
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity;
@@ -120,7 +118,7 @@ public class CartsController : Controller
         ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
         var user = _unitOfWork.ApplicationUsers.Get(u => u.Id == userId);
-        ShoppingCartVM.OrderHeader.ApplicationUser = user;
+        
         
 
         foreach (var cart in ShoppingCartVM.ShoppingCartList)
@@ -129,9 +127,7 @@ public class CartsController : Controller
             ShoppingCartVM.OrderHeader.OrderTotal += (cart.Price * cart.Count);
         }
 
-        var check = user.CompanyId.GetValueOrDefault() == 0;
-
-        if (check)
+        if (user.CompanyId.GetValueOrDefault() == 0)
         {
             //it is a regular customer account and we need to capture payment
             ShoppingCartVM.OrderHeader.PaymentStatus = SD.PaymentStatusPending;
@@ -220,7 +216,7 @@ public class CartsController : Controller
 
             if (session.PaymentStatus.ToLower() is "paid" )
             {
-                _unitOfWork.OrderHeaders.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id,
+                _unitOfWork.OrderHeaders.UpdateStripePaymentId(id, session.Id,
                     session.PaymentIntentId);
                 _unitOfWork.OrderHeaders.UpdateStatus(id,SD.StatusApproved,SD.PaymentStatusApproved);
                 _unitOfWork.Save();

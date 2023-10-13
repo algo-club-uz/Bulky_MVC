@@ -43,9 +43,9 @@ public class HomeController : Controller
         var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
         shoppingCart.ApplicationUserId = userId;
 
-        var cart = _unit.ShoppingCarts.Get(u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
+        ShoppingCart cart = _unit.ShoppingCarts.Get(u => u.ApplicationUserId == userId && u.ProductId == shoppingCart.ProductId);
 
-        if (cart is not null)
+        if (cart != null)
         {
             //shopping cart exists 
             cart.Count += shoppingCart.Count;
@@ -54,9 +54,9 @@ public class HomeController : Controller
         else
         {
             _unit.ShoppingCarts.Add(shoppingCart); 
-            _unit.Save();
         }
 
+        _unit.Save();
         TempData["success"] = "Cart updated successfully";
 
         return RedirectToAction(nameof(Index));

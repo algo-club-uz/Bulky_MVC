@@ -15,7 +15,6 @@ public class CategoryRepository: Repository<Category>,ICategoryRepository
     public void Update(Category category)
     {
         _appDbContext.Categories.Update(category);
-        _appDbContext.SaveChanges();
     }
     
 }

@@ -46,12 +46,12 @@ public class CompanyController : Controller
             if (company.Id is 0)
             {
                 _unit.Companies.Add(company);
-                _unit.Save();
             }
             else
             {
                 _unit.Companies.Update(company);
             }
+            _unit.Save();
             TempData["success"] = "Company created successfully";
             return RedirectToAction("Index");
         }

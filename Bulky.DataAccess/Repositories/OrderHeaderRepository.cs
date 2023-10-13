@@ -15,7 +15,6 @@ public class OrderHeaderRepository : Repository<OrderHeader>, IOrderHeaderReposi
     public void Update(OrderHeader orderHeader)
     {
         _appDbContext.OrderHeaders.Update(orderHeader);
-        _appDbContext.SaveChanges();
     }
 
     public void UpdateStatus(int id, string orderStatus, string? paymentStatus = null)
