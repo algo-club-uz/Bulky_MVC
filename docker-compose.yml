@@ -1,15 +1,15 @@
 ﻿version: '3.7'
 
 services:
-  bulky_db:
+  bulky_db1:
     image: postgres:latest
-    container_name: bulky_db
+    container_name: bulky_db1
     environment:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
     restart: always
     volumes:
-      - bulky_db_data:/var/lib/postgresql/data/
+      - bulky_db1_data:/var/lib/postgresql/data/
 volumes:
-  bulky_db_data:
+  bulky_db1_data:
