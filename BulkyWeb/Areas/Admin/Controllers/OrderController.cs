@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Bulky.Models.ViewModels;
 using Bulky.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
 
@@ -11,6 +12,9 @@ namespace BulkyWeb.Areas.Admin.Controllers;
 public class OrderController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
+
+    [BindProperty]
+    public OrderVM OrderVM { get; set; }
 
     public OrderController(IUnitOfWork unitOfWork)
     {
@@ -23,14 +27,42 @@ public class OrderController : Controller
     }
     public IActionResult Details(int orderId)
     {
-        OrderVM orderVM = new()
+        OrderVM  = new()
         {
             OrderHeader = _unitOfWork.OrderHeaders.Get(u => u.Id == orderId, includeProperties:"ApplicationUser"),
             OrderDetails = _unitOfWork.OrderDetails.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Product")
         };
 
-        return View(orderVM);
+        return View(OrderVM);
     }
+
+    [HttpPost]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+    public IActionResult UpdateOrderDetail()
+    {
+        var orderFromDb = _unitOfWork.OrderHeaders.Get(u => u.Id == OrderVM.OrderHeader.Id);
+
+        orderFromDb.Name = OrderVM.OrderHeader.Name;
+        orderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
+        orderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
+        orderFromDb.City = OrderVM.OrderHeader.City;
+        orderFromDb.State = OrderVM.OrderHeader.State;
+        orderFromDb.PostalCode = OrderVM.OrderHeader.PostalCode;
+
+        if (!string.IsNullOrEmpty(OrderVM.OrderHeader.TrackingNumber))
+        {
+            orderFromDb.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
+        }
+
+        _unitOfWork.OrderHeaders.Update(orderFromDb);
+        _unitOfWork.Save();
+
+        TempData["Success"] = "Order Details Updated Successfully.";
+
+        return RedirectToAction(nameof(Details), new { orderId = orderFromDb.Id });
+
+    }
+
 
     #region API CALLS
 
