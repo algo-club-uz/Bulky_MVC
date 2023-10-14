@@ -14,6 +14,5 @@ public class ShoppingCartRepository : Repository<ShoppingCart>, IShoppingCartRep
     public void Update(ShoppingCart shoppingCart)
     {
         _appDbContext.ShoppingCarts.Update(shoppingCart);
-        _appDbContext.SaveChanges();
     }
 }

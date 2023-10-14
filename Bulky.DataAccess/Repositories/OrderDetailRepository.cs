@@ -15,7 +15,6 @@ public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailReposi
     public void Update(OrderDetail orderDetail)
     {
         _appDbContext.OrderDetails.Update(orderDetail);
-        _appDbContext.SaveChanges();
     }
     
 }

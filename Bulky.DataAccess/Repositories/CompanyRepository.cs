@@ -16,6 +16,5 @@ public class CompanyRepository:Repository<Company>, ICompanyRepository
     public void Update(Company company)
     {
         _appDbContext.Companies.Update(company);
-        _appDbContext.SaveChanges();
     }
 }

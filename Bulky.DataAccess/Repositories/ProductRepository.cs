@@ -14,6 +14,5 @@ public class ProductRepository:Repository<Product>, IProductRepository
     public void Update(Product product)
     {
         _appDbContext.Products.Update(product);
-        _appDbContext.SaveChanges();
     }
 }
