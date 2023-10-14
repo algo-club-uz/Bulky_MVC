@@ -2,6 +2,7 @@
 using Bulky.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Bulky.Models.ViewModels;
 using Bulky.Utility;
 
 namespace BulkyWeb.Areas.Admin.Controllers;
@@ -19,6 +20,16 @@ public class OrderController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+    public IActionResult Details(int orderId)
+    {
+        OrderVM orderVM = new()
+        {
+            OrderHeader = _unitOfWork.OrderHeaders.Get(u => u.Id == orderId, includeProperties:"ApplicationUser"),
+            OrderDetails = _unitOfWork.OrderDetails.GetAll(u => u.OrderHeaderId == orderId, includeProperties: "Product")
+        };
+
+        return View(orderVM);
     }
 
     #region API CALLS
