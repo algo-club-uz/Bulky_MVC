@@ -56,6 +56,8 @@ public class CartsController : Controller
         {
             //remove that from cart
             _unitOfWork.ShoppingCarts.Remove(cartFromDb);
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCarts
+                .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
         }
         else
         {
@@ -70,8 +72,10 @@ public class CartsController : Controller
     {
         var cartFromDb = _unitOfWork.ShoppingCarts.Get(u => u.Id == cartId);
             //remove that from cart
-            _unitOfWork.ShoppingCarts.Remove(cartFromDb);
-            _unitOfWork.Save();
+            _unitOfWork.ShoppingCarts.Remove(cartFromDb); 
+            HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCarts
+                .GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+        _unitOfWork.Save();
 
         return RedirectToAction(nameof(Index));
     }
