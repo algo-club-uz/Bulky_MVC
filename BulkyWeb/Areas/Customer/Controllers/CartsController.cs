@@ -225,6 +225,7 @@ public class CartsController : Controller
                 _unitOfWork.OrderHeaders.UpdateStatus(id,SD.StatusApproved,SD.PaymentStatusApproved);
                 _unitOfWork.Save();
             }
+            HttpContext.Session.Clear();
         }
 
         List<ShoppingCart> shoppingCarts = _unitOfWork.ShoppingCarts.GetAll(u => u.ApplicationUserId == orderHeader.ApplicationUserId).ToList();
